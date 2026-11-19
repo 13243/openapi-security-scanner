@@ -1,0 +1,29 @@
+openapi: 3.0.3
+info:
+  title: Mock API
+  version: 1.0.0
+security:
+  - bearer: []
+paths:
+  /public:
+    get:
+      operationId: public
+      security: []
+  /private:
+    get:
+      operationId: private
+  /broken-open:
+    get:
+      operationId: broken_open
+  /broken-protected:
+    get:
+      operationId: broken_protected
+      security: []
+  /accepts-bad-token:
+    get:
+      operationId: accepts_bad_token
+components:
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer

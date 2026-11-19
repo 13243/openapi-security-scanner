@@ -1,0 +1,12 @@
+﻿# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+
+# Local reports and evidence
+report.json
+docs/evidence/
+bootstrap.py
+clean.txt

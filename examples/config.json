@@ -1,0 +1,5 @@
+{
+  "auth": {
+    "invalid_token": "Bearer definitely-invalid-token"
+  }
+}

@@ -1,6 +1,6 @@
 # apiconf
 
-Extensible OpenAPI security-declaration conformance scanner. MVP checks
+MVP checks
 authentication declarations vs actual behavior.
 
 ## Install

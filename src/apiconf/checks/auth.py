@@ -17,20 +17,25 @@ class AuthCheck(Check):
             r = ctx.executor.request(op.method, ctx.url, headers={})
         except Exception as e:
             return [Finding(
-                check=self.name, severity="low", endpoint=endpoint,
+                check=self.name, severity="info", endpoint=endpoint,
                 mismatch_id="M4", expected="reachable",
                 actual=f"error: {e}", message="request failed",
             )]
 
         code = r.status_code
 
-        if declared_protected and code not in (401, 403):
+        if declared_protected and 200 <= code < 300:
             findings.append(Finding(
                 check=self.name, severity="high", endpoint=endpoint,
                 mismatch_id="M1",
                 expected="401/403 without auth",
                 actual=f"{code} without auth",
                 message="Declared protected endpoint is reachable without authentication.",
+                evidence={
+                    "status_code": r.status_code,
+                    "content_type": r.headers.get("content-type", ""),
+                    "body_snippet": r.text[:150] if r.text else ""
+                }
             ))
         elif (not declared_protected) and code in (401, 403):
             findings.append(Finding(
@@ -39,6 +44,11 @@ class AuthCheck(Check):
                 expected="not 401/403 without auth (declared open)",
                 actual=f"{code} without auth",
                 message="Declared open endpoint unexpectedly requires authentication.",
+                evidence={
+                    "status_code": r.status_code,
+                    "content_type": r.headers.get("content-type", ""),
+                    "body_snippet": r.text[:150] if r.text else ""
+                }
             ))
 
         if declared_protected and code in (401, 403):
@@ -53,6 +63,11 @@ class AuthCheck(Check):
                             expected="401/403 with invalid token",
                             actual=f"{r2.status_code} with invalid token",
                             message="Invalid token is accepted.",
+                            evidence={
+                                "status_code": r2.status_code,
+                                "content_type": r2.headers.get("content-type", ""),
+                                "body_snippet": r2.text[:150] if r2.text else ""
+                            }
                         ))
                 except Exception:
                     pass
